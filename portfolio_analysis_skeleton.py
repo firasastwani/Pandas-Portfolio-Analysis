@@ -32,6 +32,7 @@ for skewness and kurtosis or `scipy.stats.linregress` for regression).
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.stats import linregress
 
 # Import the local data loader. This module provides the `download_local`
 # function, which reads CSV files containing stock price data and returns
@@ -123,7 +124,27 @@ def scatter_with_regression(x: pd.Series, y: pd.Series, x_label: str, y_label: s
     TODO: Implement the scatter plot and regression using linregress.
     """
     # TODO: Replace the following placeholder values with real computations
-    return (0.0, 0.0, 0.0)
+
+    # x is the market
+    # y is the stock
+
+    plt.scatter(x, y, alpha=0.6)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.title(title)
+
+    # Fit simple linear regression (y = m*x + b)
+    m, b = np.polyfit(x, y, 1)
+    x_line = np.linspace(x.min(), x.max(), 100)
+    y_line = m * x_line + b
+    plt.plot(x_line, y_line, color='red', label='Regression Line')
+    plt.legend()
+
+    plt.show()
+
+    # Pearson correlation
+    r = float(np.corrcoef(x, y)[0, 1])
+    return (m, b, r)
 
 
 def compute_alpha_beta(stock_returns: pd.Series, market_returns: pd.Series) -> tuple[float, float]:
@@ -142,8 +163,17 @@ def compute_alpha_beta(stock_returns: pd.Series, market_returns: pd.Series) -> t
 
     TODO: Implement the regression to compute alpha (intercept) and beta (slope).
     """
+
+    result = linregress(stock_returns, market_returns)
+
+    beta = result.slope
+    alpha = result.intercept
+
+    print(f'beta = {beta}')
+    print(f'alpha = {alpha}')
+
     # TODO: Remove the placeholder and return actual (alpha, beta)
-    return (0.0, 0.0)
+    return (alpha, beta)
 
 
 def main() -> None:
@@ -168,10 +198,32 @@ def main() -> None:
     all_symbols = symbols + ['SPY']
     returns = load_stock_data(all_symbols, start_date, end_date)
 
-    plot_histogram(returns['SPY'], 'SPY')    
-    plot_histogram(returns['SMCI'], 'SCMI')    
-    plot_histogram(returns['IBM'], 'IBM')    
-    plot_histogram(returns['GOOG'], 'GOOG')    
+    #plot_histogram(returns['SPY'], 'SPY')    
+    #plot_histogram(returns['SMCI'], 'SCMI')    
+    #plot_histogram(returns['IBM'], 'IBM')    
+    #plot_histogram(returns['GOOG'], 'GOOG')    
+
+    # Use the already loaded data from the returns DataFrame
+    spy_returns = returns['SPY']
+    ibm_returns = returns['IBM']
+    goog_returns = returns['GOOG']
+    smci_returns = returns['SMCI']
+
+    # Map symbols to their return Series for easy lookup
+    symbol_to_returns = {
+        'IBM': ibm_returns,
+        'GOOG': goog_returns,
+        'SMCI': smci_returns,
+    }
+
+    for symbol in symbols:
+        y_series = symbol_to_returns.get(symbol)
+        if y_series is None:
+            continue
+        y_axis = symbol + ' Returns'
+        title = 'SPY vs ' + symbol + ' Returns'
+        #scatter_with_regression(spy_returns, y_series, 'SPY Returns', y_axis, title)
+        compute_alpha_beta(spy_returns, y_series)
 
 
 
