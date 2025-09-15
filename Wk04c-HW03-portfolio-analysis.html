@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CSCI 4170/6170 (F25): Lab+HW 01 — Weather + Stocks (Integrated)</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; background-color: #f4f4f4; }
+        h1,h2 { color: #000; }
+        code { font-family: "Courier New", Courier, monospace; padding: 2px 4px; border-radius: 4px; font-size: 1.05em; color:#0C7A8A; }
+        pre { border: 1px solid #666; background:#DDD; padding: 10px; margin: 16px 0; overflow:auto; }
+        ul { list-style-type: square; }
+        .container { max-width: 900px; margin: auto; background:#FFF; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,.1); color:#000; }
+        table { border-collapse: collapse; width:100%; }
+        table, th, td { border:1px solid #666; }
+        th, td { padding:8px; }
+        .badge-upd { background:#ffc107; color:#000; }
+        .badge-new { background:#198754; }
+        .dim { color:#444; }
+    </style>
+</head>
+
+<body>
+<div class="container" id="main">
+    [course <a href="schedule.html">schedule</a>]
+    </br>    </br>
+    <h2>Lab/HW03 -- Stock Analysis: Histograms, Alpha, Beta, &amp; Correlation</h2>
+    <p><em>CSCI 4170/6170 — Fall 2025</em></p>
+    <hr />
+
+    <div class="alert alert-warning">
+        <strong>Assignment Date:</strong> Monday, Sep 08, 2025 @ 11:59pm.<br>
+        <strong>Due Date:</strong> Monday, Sep 15, 2025 @ 11:59pm.<br><br>
+    </div>
+    <div class="alert alert-info">
+        <!-- placeholder for SOMETHING -->
+        <strong>Note 1</strong>: The details in this specification are provisional and may be refined when the full homework is released.
+        For example, the final HW might require a different set of symbols, a different date range,
+        or additional output files beyond those listed here.
+
+        <br><strong>Note 2</strong>: Please use the data/ directory of the .csv file in the zip for Week 4 (Comparing Stocks Zip).
+    </div>
+
+<h1>Lab/HW03 -- Stock Analysis: Histograms, Alpha, Beta, &amp; Correlation</h1>
+
+<h2>Important Notice</h2>
+<p>--&gt; You will need to submit your code, data directory, and demo video links to the <strong>eLC.</strong></p>
+<p>What to submit: code, report, plots &amp; demo video.</p>
+<ul>
+    <li><strong>Code</strong>: <code>scatterplot_analysis.py</code>, <code>histogram_analysis.py</code></li>
+    <li><strong>Analysis</strong>: Write a report that analyzes the results, including plots, and submit it along with your demo video.</li>
+    <li><strong>Piazza</strong>: Post on Piazza with a screenshot and describe an interesting observation or finding from your analysis in a common post shared with the class.</li>
+</ul>
+
+<h2>Objective</h2>
+<p>The objective of this lab and assignment is to analyze stock returns using histograms to interpret distribution, then calculate and evaluate alpha, beta, and correlation for more complex stock selection.</p>
+
+<h2>Resources</h2>
+<ul>
+    <li>get_stock_data helper&nbsp;module</a></li>
+    <li><a href="https://pandas.pydata.org/pandas-docs/stable/">Pandas Documentation</a></li>
+</ul>
+
+<h2>Lab Task: Histogram Analysis (In-Class)</h2>
+<p>In this lab section, you will focus on analyzing stock distributions using histograms and making decisions based on skewness and kurtosis.</p>
+<ul>
+    <li><strong>Task&nbsp;0: Load Stock Data with <code>get_stock_data</code> (<code>get_local_data.py</code>)</strong>
+        <ul>
+            <li>Use the provided helper function
+                <code>download_local(symbols, start, end, data_dir="data")</code> to read <em>Adjusted&nbsp;Close</em>
+                prices from the CSV files in your <code>data/</code> folder (no Internet required).</li>
+            <li>Date range for the warm-up: <code>'2020-01-01'</code> to <code>'2022-12-31'</code>.</li>
+            <li>Pick stocks <em>not</em> shown in lecture, save the resulting DataFrame to CSV, and print the first
+                10&nbsp;rows to verify.</li>
+        </ul>
+    </li>
+    <li><strong>Task&nbsp;1: Analyze Stock Distributions Using Histograms</strong>
+        <ul>
+            <li>Create histograms of the daily returns for each stock and compare them to SPY.</li>
+            <li>Overlay a Gaussian curve on each histogram to assess normality.</li>
+            <li>Calculate skewness and kurtosis for every stock; include the values in the legend.</li>
+        </ul>
+    </li>
+    <li><strong>Task 2: Pick Stocks Based on Histogram Analysis</strong>
+        <ul>
+            <li><strong>Pick 2 stock</strong>s that exhibit favorable behavior based on their histogram analysis (e.g., closer to normal distribution with moderate skewness/kurtosis).</li>
+            <li><strong>Pick 1 stock</strong> that has poor performance based on the histogram analysis (e.g., highly skewed or kurtotic distribution).</li>
+        </ul>
+    </li>
+</ul>
+
+<h2>Homework: Correlation, Alpha, Beta, & Comparison Analysis</h2>
+<p>In the homework portion, you will use correlation, alpha, and beta to further refine your stock choices from the lab section. You will compare the picks made based on the histograms against those selected using correlation and alpha/beta analysis.  </p>
+<p>You will do the following tasks <strong>twice</strong>, once with the stocks you picked in the lab, and once by considering a larger set of stocks, see below in & " Follow-Up Analysis.&quot;</p>
+<ul>
+    <li><strong>Task 3: Scatter Plot and Correlation Analysis (<code>scatterplot_analysis.py</code>)</strong>
+        <ul>
+            <li>For each of the 3 stocks you picked in the lab section, plot a scatter plot showing the daily returns compared to SPY.</li>
+            <li>Fit a linear regression line and calculate the correlation coefficient.</li>
+            <li>Use this correlation analysis to assess the relationship of each stock to the market.</li>
+        </ul>
+    </li>
+    <li><strong>Task 4: Alpha & Beta Analysis</strong>
+        <ul>
+            <li>Calculate the alpha and beta for each of your selected stocks using SPY as the market benchmark.</li>
+            <li>Interpret the alpha (excess returns) and beta (volatility relative to the market) to decide which stock has performed better or worse in comparison to SPY.</li>
+        </ul>
+    </li>
+    <li><strong>Task 5: Compare Stocks Chosen by Histogram vs. Alpha/Beta Analysis</strong>
+        <ul>
+            <li>Compare the stocks you selected in the lab based on histograms with the stocks you would select based on alpha/beta and correlation.</li>
+            <li>Discuss which method (histogram analysis vs. alpha/beta analysis) you found to be more effective or insightful.</li>
+        </ul>
+    </li>
+</ul>
+
+<h2>Follow-Up Analysis: Picking Stocks for a Full Portfolio</h2>
+<p>In this follow-up assignment, you'll extend the analysis to a larger set of stocks.</p>
+<ol>
+        <li>Load the historical prices for all 500 S&amp;P&nbsp;500 companies from the
+            CSV already included in the <code>data/</code> folder
+            (<em>downloaded in&nbsp;2024 – no Internet/yfinance needed</em>).</li>
+    <li>Download historical prices for all 500 S&amp;P 500 companies for the selected year or time period (CSV provided - see schedule page link).</li>
+    <li>Focus only on adjusted close prices to account for dividends and stock splits.</li>
+    <li>For each stock, compute the daily return for each day.</li>
+    <li>Repeat this calculation for your benchmark (most likely SPY).</li>
+    <li>Select two stocks, for example, <code>JPM</code> (JPMorgan Chase) and <code>NVDA</code> (NVIDIA).</li>
+    <li>For each of these two stocks, create a scatter plot of SPY (benchmark) daily returns versus the stock’s daily returns. Fit a line to the data points and display it in red.</li>
+    <li>For each of the two stocks, calculate the following:
+        <ul>
+            <li>Beta</li>
+            <li>Alpha</li>
+            <li>Pearson’s correlation coefficient</li>
+        </ul>
+    </li>
+    <li>Create a chart that includes histograms of the daily returns for all three: SPY, JPM, and NVDA. Use reduced opacity to overlay the histograms. Draw a vertical line for each asset at its mean daily return.</li>
+    <li>Consider the plot and describe how Beta, Alpha, and relative volatility are represented visually.</li>
+</ol>
+<p>Finally, compute the Beta, Alpha, and standard deviation (volatility) for all 500 S&amp;P 500 stocks. Answer the following questions:</p>
+<ul>
+  <li>Is Beta correlated with the standard deviation of returns (volatility)?</li>
+  <li>Is Alpha correlated with the standard deviation?</li>
+</ul>
+
+<h2>Video Submission Guidelines</h2>
+<ul>
+    <li>Length: The video should be 3-5 minutes long.</li>
+    <li>Content: Briefly explain your code structure, walk through the outputs for each task, showing your plots and analysis.</li>
+    <li>Challenges: Discuss any challenges you encountered and how you overcame them.</li>
+</ul>
+
+<h2>Submission Checklist</h2>
+<ul>
+    <li>☐ Task 0: Stock data fetched and saved to CSV.</li>
+    <li>☐ Task 1: Histogram analysis completed and 3 stocks selected.</li>
+    <li>☐ Task 3: Scatter plot and correlation analysis completed.</li>
+    <li>☐ Task 4: Alpha and beta calculated and interpreted.</li>
+    <li>☐ Task 5: Comparison between histogram picks and alpha/beta picks completed.</li>
+    <li>☐ Video link demoing code and analysis submitted on eLC.</li>
+    <li>☐ Piazza post.</li>
+</ul>
+
+<h2>Grading Criteria</h2>
+<table border="1" cellpadding="10">
+    <tr>
+        <th width="48">Points</th>
+        <th width="689">Criteria</th>
+    </tr>
+    <tr>
+        <td style="text-align: right;">15 pts</td>
+        <td>Progress in Lab - Selected and plotted interesting stocks based on histogram analysis (Tasks 1-3)</td>
+    </tr>
+    <tr>
+        <td style="text-align: right;">20 pts</td>
+        <td>Histogram analysis, including skewness and kurtosis, for the selected stocks (Task 1-2)</td>
+    </tr>
+    <tr>
+        <td style="text-align: right;">25 pts</td>
+        <td>Scatter plot and correlation analysis, including regression line fitting (Task 4)</td>
+    </tr>
+    <tr>
+        <td style="text-align: right;">20 pts</td>
+        <td>Alpha and beta analysis, interpretation, and comparison between histogram and alpha/beta stock picks (Task 5)</td>
+    </tr>
+    <tr>
+        <td style="text-align: right;">5 pts</td>
+        <td>Video Link demoing your code and analysis submitted on eLC</td>
+    </tr>
+    <tr>
+        <td style="text-align: right;">5 pts</td>
+        <td>Posting on Piazza with a screenshot and brief description of your stock analysis results</td>
+    </tr>
+    <tr>
+        <td style="text-align: right;">10 pts</td>
+        <td>Well-commented, clean code, and proper file organization</td>
+    </tr>
+</table>
+
+<h2>&nbsp;</h2>
+<p>Good luck, and enjoy analyzing stock market data with Python!</p>
+</div>
+</body>
+</html>
