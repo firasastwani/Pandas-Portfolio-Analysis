@@ -32,7 +32,7 @@ for skewness and kurtosis or `scipy.stats.linregress` for regression).
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.stats import linregress
+from scipy.stats import linregress, skew, kurtosis
 
 # Import the local data loader. This module provides the `download_local`
 # function, which reads CSV files containing stock price data and returns
@@ -96,8 +96,11 @@ def plot_histogram(returns: pd.Series, symbol: str) -> tuple[float, float]:
 
 
 
-    # TODO: Replace pass with your implementation that returns (skewness, kurtosis)
-    return (0.0, 0.0)  # placeholder return; compute and return actual values
+    # Calculate skewness and kurtosis
+    skewness = skew(returns)
+    kurt = kurtosis(returns)
+    
+    return (skewness, kurt)
 
 
 def scatter_with_regression(x: pd.Series, y: pd.Series, x_label: str, y_label: str, title: str) -> tuple[
@@ -198,11 +201,6 @@ def main() -> None:
     all_symbols = symbols + ['SPY']
     returns = load_stock_data(all_symbols, start_date, end_date)
 
-    #plot_histogram(returns['SPY'], 'SPY')    
-    #plot_histogram(returns['SMCI'], 'SCMI')    
-    #plot_histogram(returns['IBM'], 'IBM')    
-    #plot_histogram(returns['GOOG'], 'GOOG')    
-
     # Use the already loaded data from the returns DataFrame
     spy_returns = returns['SPY']
     ibm_returns = returns['IBM']
@@ -216,20 +214,6 @@ def main() -> None:
         'SMCI': smci_returns,
     }
 
-    for symbol in symbols:
-        y_series = symbol_to_returns.get(symbol)
-        if y_series is None:
-            continue
-        y_axis = symbol + ' Returns'
-        title = 'SPY vs ' + symbol + ' Returns'
-        #scatter_with_regression(spy_returns, y_series, 'SPY Returns', y_axis, title)
-        compute_alpha_beta(spy_returns, y_series)
-
-
-
-
-    # Separate the benchmark returns
-    market_returns = returns['SPY']
 
     # Task 1: Histogram analysis
     # -------------------------------------
@@ -241,11 +225,38 @@ def main() -> None:
     #     skewness, kurt = plot_histogram(returns[symbol], symbol)
     #     print(f"{symbol}: skew={skewness:.4f}, kurt={kurt:.4f}")
 
+    histogram_metrics = {}
+    for symbol in symbols:
+        print(f"\n{symbol} Histogram Analysis:")
+        skewness, kurt = plot_histogram(returns[symbol], symbol)
+        histogram_metrics[symbol] = {'skewness': skewness, 'kurtosis': kurt}
+        print(f"  Skewness: {skewness:.4f}")
+        print(f"  Kurtosis: {kurt:.4f}")
+
+
+
     # Task 2: Select stocks based on histogram results
     # -------------------------------------
     # Use the skewness and kurtosis from Task 1 to choose two 'good'
     # stocks and one 'poor' stock. You can store the selections in
     # lists such as good_stocks and poor_stock.
+
+    # Based on histogram analysis results:
+    # IBM: Skewness: -0.5214, Kurtosis: 8.0979 (moderate negative skew, high kurtosis)
+    # GOOG: Skewness: -0.0352, Kurtosis: 3.0623 (nearly normal distribution)
+    # SMCI: Skewness: 1.1548, Kurtosis: 15.9335 (strong positive skew, very high kurtosis)
+    
+    # Histogram-based selection:
+    good_stocks_histogram = ['GOOG', 'IBM']  # GOOG is most normal, IBM is second best
+    poor_stock_histogram = ['SMCI']  # SMCI has extreme skewness and kurtosis
+    
+    print("Good stocks (based on histogram analysis):", good_stocks_histogram)
+    print("Poor stock (based on histogram analysis):", poor_stock_histogram)
+    print("\nReasoning:")
+    print("- GOOG: Nearly normal distribution (skew ≈ 0, kurtosis ≈ 3)")
+    print("- IBM: Moderate deviation from normal (acceptable for stable investment)")
+    print("- SMCI: Extreme distribution (high positive skew, very high kurtosis = risky)")
+
 
     # Task 3: Scatter plot and correlation analysis
     # -------------------------------------
@@ -258,11 +269,56 @@ def main() -> None:
     # For each selected stock, call `compute_alpha_beta` to obtain
     # it's alpha and beta relative to the benchmark.
 
+
+ # Task 3 & 4: Scatter plots and alpha/beta analysis
+    print("\n" + "=" * 60)
+    print("TASK 3 & 4: SCATTER PLOTS AND ALPHA/BETA ANALYSIS")
+    print("=" * 60)
+    
+    alpha_beta_metrics = {}
+    correlation_metrics = {}
+    
+    for symbol in symbols:
+        y_series = symbol_to_returns.get(symbol)
+        if y_series is None:
+            continue
+        y_axis = symbol + ' Returns'
+        title = 'SPY vs ' + symbol + ' Returns'
+
+        # Create scatter plot and get regression metrics
+        slope, intercept, r_value = scatter_with_regression(spy_returns, y_series, 'SPY Returns', y_axis, title)
+        
+        # Store metrics
+        alpha_beta_metrics[symbol] = {'alpha': intercept, 'beta': slope}
+        correlation_metrics[symbol] = r_value
+        
+        print(f'\n{symbol} Analysis:')
+
+        alpha, beta = compute_alpha_beta(spy_returns, y_series)
+
+        print(f'  Alpha (intercept): {intercept:.6f}')
+        print(f'  Beta (slope): {slope:.4f}')
+        print(f'  Correlation: {r_value:.4f}')
+
+
     # Task 5: Compare histogram-based picks with alpha/beta picks
     # -------------------------------------
     # Compare the stocks chosen in Task 2 with those that appear
     # attractive according to alpha/beta and correlation metrics.
     # Summarize which method you find more informative and why.
+
+    print('Histogram method: ')
+    print('- Focus on distribution shape and normality')
+    print('- Good for indenitifying stable predictable retruns')
+
+    print('Alpha and Beta method: ')
+    print('- Focus on risk-adjusted returns and market relationship')
+    print('- Good for indentifiying stocks that perform better than market (alpha)')
+
+    print("\nRECOMMENDATION:")
+    print("- For conservative investors: Use histogram analysis (focus on distribution stability)")
+    print("- For growth investors: Use alpha/beta analysis (focus on excess returns)")
+    print("- For balanced approach: Combine both methods and look for stocks that rank well in both")
 
     # NOTE: You are encouraged to create additional helper functions or
     # modules as needed. This skeleton is merely a starting point.
